@@ -1,0 +1,23 @@
+.control-wrapper {
+  background-color: #666;
+  border-radius: 5px;
+  padding: 5px;
+  width: 400px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.control-inputs {
+  align-self: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.btn {
+  float: right;
+}
+
+.control-wrapper input {
+  width: 75px;
+}
