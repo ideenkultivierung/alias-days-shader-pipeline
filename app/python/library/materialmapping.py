@@ -1,36 +1,33 @@
 from enum import Enum
 import csv
 from fuzzywuzzy import fuzz
-
+import vrAssetsModule
+import vrMaterialPtr
 
 class MaterialMapper():
 
-    class MappingType(Enum):
-        MaterialName = 0,
-        NameMapping = 1
-
-    def applyMaterialMappingByExactName(self, material_library_path: str):
+    def applyMaterialMappingByExactName(self):
         """
         Call vrAssetModules function to apply material from the asset manager based on the exact matching material name
         """
-        applyMaterialAssetsByName(material_library_path)
+        applyMaterialAssetsByName()
 
-    def applyMaterialMappingByNames(self, material_library_path: str, material_mapping_path: str, threshold: float=0.0):
+    def applyMaterialMappingByNames(self, material_mapping_path: str, threshold: float=0.0):
         """
         Apply a material mapping by providing a path to a material library that is added in the asset manager, and
         a mapping table that maps a material name in the scene to a material in the library
         """
         mapping = self.__readNameToNameCsv(material_mapping_path)
-        self.__applyMaterialByName(mapping, material_library_pat, threshold)
+        self.__applyMaterialByName(mapping, threshold)
 
-    def applyMaterialMappingByRgb(self, material_library_path: str, material_mapping_path: str, threshold: float=0.0):
+    def applyMaterialMappingByRgb(self, material_mapping_path: str, threshold: float=0.0):
         """
         Apply a material mapping by providing a path to a material library that is added in the asset manager, and
         a mapping table that maps a material an RGB value of a material to a material in the library.
         When a material in the scene has an equal RGB value (with tolerance), the mapping is applied.
         """
         mapping = self.__readRgbToNameCsv(material_mapping_path)
-        self.__applyMaterialByRgb(mapping, material_library_path)
+        self.__applyMaterialByRgb(mapping, threshold)
 
     def __readNameToNameCsv(self, file_path: str):
         """
@@ -66,7 +63,7 @@ class MaterialMapper():
                 if bool(rgbs) and bool(material):
                     try:
                         # rgbs are seperated by space -> convert them to a tuple of string values (python magic!)
-                        rgb = tuple(filter(None, rgbs.split(' ')))
+                        rgb = tuple([round(float(channel),2) for channel in rgbs.split(' ')])
 
                         if len(rgb) != 3:
                             raise
@@ -79,20 +76,23 @@ class MaterialMapper():
 
             return mapping
 
-    def __applyMaterialByName(self, mapping: dict, material_library_path: str, threshold: float=0.0):
+    def __applyMaterialByName(self, mapping: dict, threshold: float=0.0):
         """
         Apply a material mapping by name. Search all materials for matches in the
         mapping dictionary. If a match is found, it will try to load the according
         material from the material library in the asset manager
         """
-        materials = getAllMaterials()
+        materials = vrMaterialPtr.getAllMaterials()
 
         for material in materials:
             materialName = material.getName()
 
             mappedMaterialName = None
             if threshold == 0.0:
-                mappedMaterialName = mapping[materialName]
+                if materialName in mapping:
+                    mappedMaterialName = mapping[materialName]
+                else:
+                    mappedMaterialName = None
             else:
                 mappedMaterialName = self.__matchMaterialNameFuzzy(materialName, mapping, threshold)
                 
@@ -100,8 +100,7 @@ class MaterialMapper():
                 print("> Found mapping for {} -> {}".format(materialName, mappedMaterialName))
 
                 # Load material asset and apply the material from the asset library
-                replacementMaterial = loadMaterialAssetByName(
-                    mappedMaterialName, material_library_path)
+                replacementMaterial = vrAssetsModule.loadMaterialAssetByName(mappedMaterialName)
 
                 # Get all nodes that use the original material
                 nodes = material.getNodes()
@@ -112,13 +111,13 @@ class MaterialMapper():
             else:
                 print("> [warning] Found no mapping for {}".format(materialName))
 
-    def __applyMaterialByRgb(self, mapping: dict, material_library_path: str, threshold: float=0.0):
+    def __applyMaterialByRgb(self, mapping: dict, threshold: float=0.0):
         """
         Apply a material mapping by its RGB value. Search all materials for matches in the
         mapping dictionary. If a material with matching RGB values is found, it will try to load the according
         material from the material library in the asset manager
         """
-        materials = getAllMaterials()
+        materials = vrMaterialPtr.getAllMaterials()
 
         for material in materials:
             materialName = material.getName()
@@ -127,21 +126,23 @@ class MaterialMapper():
             # Read diffuse color values from the material fields
             diffuseColor = material.fields().getVec("diffuseColor", 3)
             # Convert rgb values in a tuple of strings to compare it to our mapping
-            materialRgb = tuple([str(value)[:5] for value in diffuseColor])
+            materialRgb = tuple([round(float(value),2) for value in diffuseColor])
 
             if threshold == 0.0:
                 # Match exact material color
-                mappedMaterialName = mapping[materialRgb]
+                if materialRgb in mapping:
+                    mappedMaterialName = mapping[materialRgb]
+                else:
+                    mappedMaterialName = None
             else:
                 # Try matching color with threshold
-                mappedMaterialName = self.__matchColorWithThreshold(materialRgb, mapping, threshold):
+                mappedMaterialName = self.__matchColorWithThreshold(materialRgb, mapping, threshold)
 
             if mappedMaterialName != None:
                 print("> Found mapping for {} -> {}".format(materialRgb, mappedMaterialName))
 
                 # Load material asset and apply the material from the asset library
-                replacementMaterial = loadMaterialAssetByName(
-                    mappedMaterialName, material_library_path)
+                replacementMaterial = vrAssetsModule.loadMaterialAssetByName(mappedMaterialName)
 
                 # Get all nodes that use the original material
                 nodes = material.getNodes()
@@ -191,6 +192,3 @@ class MaterialMapper():
                 return materialNameCandiate
 
         return None
-
-
-

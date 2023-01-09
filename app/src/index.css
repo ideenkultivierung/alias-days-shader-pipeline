@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: medium;
+  font-size: large;
 }
 
 code {
@@ -20,11 +20,9 @@ code {
   box-shadow: 6px 6px 4px -4px rgba(54, 54, 54, 1);
   border: 1px solid grey;
   background: rgb(2, 0, 36);
-  background: linear-gradient(
-    127deg,
-    rgba(102, 102, 102, 1) 0%,
-    rgba(85, 85, 85, 1) 100%
-  );
+  background: linear-gradient(127deg,
+      rgba(102, 102, 102, 1) 0%,
+      rgba(85, 85, 85, 1) 100%);
 }
 
 .bg-container-single-line {
@@ -44,24 +42,24 @@ code {
   width: 400px;
 }
 
-.bg-container-single-line > .title,
-.bg-container > .title {
+.bg-container-single-line>.title,
+.bg-container>.title {
   color: #f38f1c;
   margin: 5px 5px 10px 5px;
   font-weight: bold;
 }
 
-.bg-container > .interface-group {
+.bg-container>.interface-group {
   border-radius: 5px;
   border: 1px solid grey;
   padding: 5px;
 }
 
-.interface-group > * {
+.interface-group>* {
   margin-bottom: 10px;
 }
 
-.interface-group > *:last-child {
+.interface-group>*:last-child {
   margin-bottom: unset;
 }
 
@@ -71,7 +69,7 @@ code {
   justify-content: stretch;
 }
 
-.import-input-group > input {
+.import-input-group>input {
   flex-grow: 1;
 }
 
@@ -81,6 +79,10 @@ code {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.input-group {
+  margin-bottom: 10px;
 }
 
 input[type="checkbox"] {

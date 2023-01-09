@@ -2,7 +2,7 @@
 
 ### Alias Days - January 2023
 
-## Problem
+## Motivation
 
 - Shading CAD data can be time consuming
   - error-prone
@@ -11,8 +11,13 @@
 - Working with un-organized nurbs data
 - Working with different file formats
 - When there are errors its often needed to fix them in the source file
+- Separate form and shading
+- Enable un-trained employees to use the shaderpipeline
 
-## Solution
+- Example Tools:
+  - Unreal Engine: Data Smith
+
+## Solution in VRED
 
 - Use an automated shaderpipeline in VRED to do the time consuming work
 - Automatically apply materials by using material libraries
@@ -67,4 +72,4 @@
   - Merge materials
   - Reduce hierarchy depth (to improve performance in VR)
 
-## Appendix 1 -
+## Appendix 1

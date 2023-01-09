@@ -1,29 +1,39 @@
 import React from "react";
 import "./App.css";
 import Connection from "./components/connection/Connection";
-import PresetSelection from "./components/preset-selection/PresetSelection";
-import Baking from "./components/baking/Baking";
 import MaterialMapping from "./components/material-mapping/MaterialMapper";
-import Optimization from "./components/optimization/Optimization";
 import Import from "./components/import/Import";
-import { sendScript } from "./api/python-api-v1";
-import { importLibrariesScript } from "./api/lib/import_libraries.js";
 import * as PRESETS from "./presets/presets.js";
 
 class App extends React.Component {
   state = {
     ip: "127.0.0.1",
-    port: "8000",
+    port: "8888",
     api: undefined,
-    preset: "vr",
     importSettings: PRESETS.ATF_SETTINGS_VR,
     sceneSettings: PRESETS.SCENE_SETTINGS,
     bakingSettings: PRESETS.BAKING_SETTINGS_VR,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.findLocalHost();
     this.loadWebApiModule();
-    this.importLibraries();
+  }
+
+  findLocalHost() {
+    return new Promise((resolve) => {
+      let hostname = window.location.hostname;
+      if (hostname === "localhost") {
+        hostname = "127.0.0.1";
+      }
+      this.setState(
+        {
+          ip: hostname,
+          port: this.state.port,
+        },
+        resolve()
+      );
+    });
   }
 
   loadWebApiModule = () => {
@@ -48,53 +58,15 @@ class App extends React.Component {
     console.log("...finished", window.api);
   };
 
-  importLibraries = async () => {
-    const checkLibrariesAvailable = async () => {
-      const response = await sendScript("MaterialMapper()", this.state.ip, this.state.port);
-      return response && !response.includes("NameError");
-    };
-
-    const libaryAvailable = await checkLibrariesAvailable();
-
-    if (!libaryAvailable) {
-      console.log("Libraries are not yet injected...");
-      sendScript(importLibrariesScript, this.state.ip, this.state.port)
-        .then((data) => {
-          console.log("Libraries are not yet injected...done");
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } else {
-      console.log("Libraries are already injected...");
-    }
-  };
-
   setConnectionParameters = (ip, port) => {
-    this.setState(
-      {
-        ip: ip,
-        port: port,
-      },
-      () => {
-        this.loadWebApiModule();
-        this.importLibraries();
-      }
-    );
+    this.setState({
+      ip: ip,
+      port: port,
+    });
   };
 
   setImportSettings = (importSettings) => {
     this.setState(importSettings);
-  };
-
-  setBakingSettings = (bakingSettings) => {
-    this.setState(bakingSettings);
-  };
-
-  setPreset = (preset) => {
-    this.setState({
-      preset: preset,
-    });
   };
 
   render() {
@@ -107,30 +79,15 @@ class App extends React.Component {
             ip={this.state.ip}
             port={this.state.port}
           />
-
-          {/* Preselection Module for Changing between VR, Preview and High Quality Settings */}
-          <PresetSelection setPreset={this.setPreset} />
-          <Import
-            ip={this.state.ip}
-            port={this.state.port}
-            preset={this.state.preset}
-            importSettings={this.state.importSettings}
-            sceneSettings={this.state.sceneSettings}
-          />
-
-          {/* Optimization Module for merging nodes, groups etc. */}
-          <Optimization ip={this.state.ip} port={this.state.port} />
+          <Import ip={this.state.ip} port={this.state.port} />
 
           {/* Material Mapping Module to apply materials to the scene */}
           <MaterialMapping ip={this.state.ip} port={this.state.port} />
-
-          {/* Baking Mapping Module to generate lightmaps */}
-          {/* <Baking preset={this.state.preset} settings={this.state.bakingSettings} /> */}
         </div>
         <iframe
           title="streamContainer"
           className="stream"
-          src={"http://" + this.state.ip + ":" + this.state.port + "/apps/VREDStream/index.html"}
+          src={"http://" + this.state.ip + ":" + this.state.port + "/apps/VREDStream/index.html?width=1920&height=1080"}
         ></iframe>
       </div>
     );
