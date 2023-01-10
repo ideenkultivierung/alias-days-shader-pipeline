@@ -1,4 +1,3 @@
-from enum import Enum
 import csv
 from fuzzywuzzy import fuzz
 import vrAssetsModule
@@ -10,7 +9,7 @@ class MaterialMapper():
         """
         Call vrAssetModules function to apply material from the asset manager based on the exact matching material name
         """
-        applyMaterialAssetsByName()
+        vrAssetsModule.applyMaterialAssetsByName()
 
     def applyMaterialMappingByNames(self, material_mapping_path: str, threshold: float=0.0):
         """
@@ -181,7 +180,6 @@ class MaterialMapper():
         
         return None
 
-    
     def __matchMaterialNameFuzzy(self, materialName: str, mapping: dict, threshold: float=0.0):
         for item in mapping.items():
             mappingName, materialNameCandiate = item
