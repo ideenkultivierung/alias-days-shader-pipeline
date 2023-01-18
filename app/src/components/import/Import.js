@@ -4,7 +4,7 @@ import { sendScript } from "./../../api/python-api-v1";
 class Import extends React.Component {
   reimportFile = async () => {
     await sendScript("newScene()", this.props.ip, this.props.port);
-    await sendScript("load('C:/alias_days_assets/ESPORT_GENTILE_Export.vpb')", this.props.ip, this.props.port);
+    await sendScript("load('C:/alias-days-shader-pipeline/cad/demo_import.vpb')", this.props.ip, this.props.port);
   };
 
   render() {

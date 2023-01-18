@@ -5,12 +5,8 @@ import { sendScript } from "../../api/python-api-v1";
 class MaterialMapping extends React.Component {
   state = {
     materialMappingMode: "assetManager",
-    rgbMappingFilePath: "C:/Development/alias-days-shader-pipeline/app/python/material_mappings/rgb-to-name.csv",
-    nameMappingFilePath: "C:/Development/alias-days-shader-pipeline/app/python/material_mappings/name-to-name.csv",
-  };
-
-  materialLibraryMapping = {
-    aurora: "D:/Development/autodeks-vred-developer-day-assets/Aurora/Aurora_MaterialAssets",
+    rgbMappingFilePath: "C:/alias-days-shader-pipeline/material_mappings/rgb-to-name.csv",
+    nameMappingFilePath: "C:/alias-days-shader-pipeline/material_mappings/name-to-name.csv",
   };
 
   applyColorMapping = async () => {
@@ -24,7 +20,7 @@ class MaterialMapping extends React.Component {
   };
 
   applyFuzzyNameMapping = async () => {
-    const script = `MaterialMapper().applyMaterialMappingByNames("${this.state.nameMappingFilePath}", 0.1)`;
+    const script = `MaterialMapper().applyMaterialMappingByNames("${this.state.nameMappingFilePath}", 0.25)`;
     await sendScript(script, this.props.ip, this.props.port);
   };
 

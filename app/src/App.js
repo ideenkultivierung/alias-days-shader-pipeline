@@ -3,16 +3,12 @@ import "./App.css";
 import Connection from "./components/connection/Connection";
 import MaterialMapping from "./components/material-mapping/MaterialMapper";
 import Import from "./components/import/Import";
-import * as PRESETS from "./presets/presets.js";
 
 class App extends React.Component {
   state = {
     ip: "127.0.0.1",
     port: "8888",
     api: undefined,
-    importSettings: PRESETS.ATF_SETTINGS_VR,
-    sceneSettings: PRESETS.SCENE_SETTINGS,
-    bakingSettings: PRESETS.BAKING_SETTINGS_VR,
   };
 
   async componentDidMount() {
@@ -79,6 +75,7 @@ class App extends React.Component {
             ip={this.state.ip}
             port={this.state.port}
           />
+          {/* Import Module module to reload scene */}
           <Import ip={this.state.ip} port={this.state.port} />
 
           {/* Material Mapping Module to apply materials to the scene */}

@@ -71,5 +71,3 @@
   - Merge geometries
   - Merge materials
   - Reduce hierarchy depth (to improve performance in VR)
-
-## Appendix 1

@@ -1,4 +1,40 @@
-from enum import Enum
+"""
+Copyright 2023 Ideenkultivierung GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+"""
+
+"""
+Author: Christopher Gebhardt
+Email: cg@ideenkultivierung.de
+Website: www.ideenkultivierung.de
+"""
+
+"""
+Material Mapper Library that is used to match material in imported VRED files to material in the material library. This 
+is either done by comparing material names or material RGB values. Each function has an optional parameter threshold
+which defines a fuzzyness for comparison.
+
+There are different ways to use this script:
+    1. Either import this whole script in the ScriptEditor of VRED. The functions will then be available in the global VRED namespace
+    2. Add this file to the python libraries in the python installation e.g. "C:\Program Files\Autodesk\VREDPro-15.0\lib\python\Lib\site-packages"
+       When doing this the material mapper must first be imported by adding "from materialmapping import MaterialMapper" to the startup script
+       in the Preferences > Script
+       It's also possible to import "from materialmapping import MaterialMapper" manually or from the streaming app.
+  
+"""
+
 import csv
 from fuzzywuzzy import fuzz
 import vrAssetsModule
